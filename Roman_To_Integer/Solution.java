@@ -5,25 +5,26 @@ public class Solution{
     public static int romanToInt(String s){
         char[] numerals = s.toCharArray();
         int finalNum = 0;
-        int firstNum = convertRomanToNumeric(numerals[0]);
+        // If the numeral has an odd number of digits set the front number that's missed by the loop
+        int firstNum = (numerals.length % 2 != 0) ? convertRomanToNumeric(numerals[0]) : 0;
 
         // Iterates through the roman numeral and converts all the letters into numeric numbers
-        for (int i = 1; i < numerals.length; i++){
-            finalNum += convertRomanToNumeric(numerals[i]);
+        for (int i = numerals.length - 1; i > 0; i -= 2){
+            int n1 = convertRomanToNumeric(numerals[i]);
+            int n2 = convertRomanToNumeric(numerals[i - 1]);
+            
+            // If n2 is less than n1 that means it is one of the unique roman numeral combinations (like IV)
+            if (n2 < n1){
+                finalNum += n1 - n2;
+            }
+
+            // If not a unique combination add the pair to the final sum
+            else{
+                finalNum += n1 + n2;
+            }
         }
 
-        // If the roman numeral has 2 letters and the first letter is less than the last.
-        // This indicates the roman numeral is one of the unique few that have the smaller digit in front
-        if (numerals.length == 2 && firstNum < finalNum){
-            finalNum -= firstNum;
-        }
-
-        // If not one of the unique roman numerals, simply add the first number to the sum
-        else{
-            finalNum += firstNum;
-        }
-
-        return finalNum;
+        return finalNum + firstNum;
     }
 
     // Converts a roman numeral into a numeric digit
